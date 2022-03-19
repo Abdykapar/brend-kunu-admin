@@ -6,12 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "eslint": "vue-cli-service eslint --fix"
   },
   "dependencies": {
+    "buefy": "^0.9.19",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
+    "vee-validate": "^3.4.14",
     "vue": "^2.6.11",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
@@ -26,9 +30,11 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
