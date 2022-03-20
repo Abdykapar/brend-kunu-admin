@@ -1,7 +1,7 @@
 import { categoryService } from "../_services/category.service";
 
 const state = () => ({
-  data: {},
+  data: { items: [], subs: [] },
   isLoading: false,
 });
 
@@ -9,7 +9,7 @@ const actions = {
   fetchCategories({ commit }) {
     commit("SET_LOADING", true);
     categoryService
-      .getAll()
+      .getAll("all")
       .then((res) => {
         commit("SET_DATA", res);
         commit("SET_LOADING", false);
@@ -31,7 +31,12 @@ const mutations = {
 };
 
 const getters = {
-  categories: ({ data }) => data.items,
+  categories: ({ data }) =>
+    data.items.map((i) => ({
+      ...i,
+      subs: data.subs.filter((j) => j.categoryId === i._id),
+    })),
+  subCategories: ({ data }) => data.subs,
 };
 
 export default {
