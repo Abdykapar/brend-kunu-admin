@@ -10,6 +10,11 @@
     "eslint": "vue-cli-service eslint --fix"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.0",
+    "@fortawesome/free-brands-svg-icons": "^6.1.0",
+    "@fortawesome/free-regular-svg-icons": "^6.1.0",
+    "@fortawesome/free-solid-svg-icons": "^6.1.0",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
     "buefy": "^0.9.19",
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",

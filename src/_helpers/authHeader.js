@@ -1,9 +1,11 @@
-export function authHeader () {
-  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
+import VueCookies from "vue-cookies";
 
-  if (user && user.token) {
-    return { Authorization: "Bearer_" + user.token }
+export function authHeader() {
+  const data = VueCookies.get("data");
+
+  if (data && data.token) {
+    return { Authorization: "Bearer_" + data.token };
   } else {
-    return {}
+    return {};
   }
 }
