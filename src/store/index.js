@@ -5,6 +5,7 @@ import { authService } from "@/_services/auth.service";
 import router from "../router";
 
 import category from "./category";
+import post from "./post";
 
 Vue.use(Vuex);
 
@@ -35,5 +36,6 @@ export default new Vuex.Store({
   },
   modules: {
     category,
+    post,
   },
 });

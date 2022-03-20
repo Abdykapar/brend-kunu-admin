@@ -1,4 +1,5 @@
 import { categoryService } from "../_services/category.service";
+import { subCategoryService } from "@/_services/sub-category.service";
 
 const state = () => ({
   data: { items: [], subs: [] },
@@ -17,6 +18,17 @@ const actions = {
       .catch((err) => {
         console.log(err);
         commit("SET_LOADING", false);
+      });
+  },
+
+  fetchSubCategories({ commit }) {
+    subCategoryService
+      .getAll()
+      .then((res) => {
+        commit("SET_DATA", { items: [], subs: res });
+      })
+      .catch((err) => {
+        console.log(err);
       });
   },
 };
