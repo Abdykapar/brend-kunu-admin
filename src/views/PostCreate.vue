@@ -8,15 +8,28 @@
         >Post create</b-breadcrumb-item
       >
     </b-breadcrumb>
-    <post-form />
+    <post-form isEdit :item="post" />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import PostForm from "../components/posts/PostForm.vue";
 export default {
   name: "PostCreate",
   components: { PostForm },
+  computed: {
+    ...mapGetters("post", ["post"]),
+  },
+  created() {
+    const id = this.$route.params.id;
+    if (id) {
+      this.fetchPost(id);
+    }
+  },
+  methods: {
+    ...mapActions("post", ["fetchPost"]),
+  },
 };
 </script>
 

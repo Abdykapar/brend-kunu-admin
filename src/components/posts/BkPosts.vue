@@ -27,12 +27,15 @@
       <b-table-column field="title" label="Title" v-slot="props">
         {{ props.row.title }}
       </b-table-column>
-      <b-table-column field="category" label="Category" v-slot="props">
-        {{ props.row.title }}
+      <b-table-column field="image" label="Image" v-slot="{ row }">
+        <img v-if="row.image_url" :src="row.image_url" width="100" />
+      </b-table-column>
+      <b-table-column field="category" label="Category" v-slot="{ row }">
+        {{ row.subCategoryId && row.subCategoryId.title }}
       </b-table-column>
       <b-table-column field="action" label="Edit/Delete" v-slot="{ row }">
         <b-button
-          @click="onPost(true, row)"
+          @click="$router.push({ name: 'PostEdit', params: { id: row._id } })"
           class="mr-2"
           type="is-info"
           size="is-small"
@@ -49,7 +52,6 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import { postService } from "@/_services/post.service";
-import PostForm from "./PostForm.vue";
 export default {
   name: "BkPosts",
   data() {
@@ -65,23 +67,6 @@ export default {
   },
   methods: {
     ...mapActions("post", ["fetchPosts"]),
-    onPost(isEdit = false, item = {}) {
-      this.$buefy.modal.open({
-        parent: this,
-        component: PostForm,
-        hasModalCard: true,
-        canCancel: false,
-        props: {
-          isEdit,
-          item,
-        },
-        events: {
-          fetch: () => {
-            this.fetchPosts();
-          },
-        },
-      });
-    },
     onDelete(id, isSub = false) {
       this.$buefy.dialog.confirm({
         title: "Deleting post",

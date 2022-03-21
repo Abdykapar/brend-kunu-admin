@@ -29,14 +29,17 @@
             <b-input v-model="form.description" type="textarea"> </b-input>
           </b-field>
         </ValidationProvider>
-        <b-field class="file is-info mt-4" :class="{ 'has-name': !!form.file }">
-          <b-upload v-model="form.file" class="file-label">
+        <b-field
+          class="file is-info mt-4"
+          :class="{ 'has-name': !!form.image }"
+        >
+          <b-upload v-model="form.image" class="file-label">
             <span class="file-cta">
               <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />
               <span class="file-label">Click to upload photo</span>
             </span>
-            <span class="file-name" v-if="form.file">
-              {{ form.file.name }}
+            <span class="file-name" v-if="form.image">
+              {{ form.image.name }}
             </span>
           </b-upload>
         </b-field>
@@ -69,7 +72,8 @@
         <vue-editor
           id="editor"
           useCustomImageHandler
-          @imageAdded="() => {}"
+          :editorOptions="editorSettings"
+          @image-added="handleImageAdded"
           v-model="form.text"
         >
         </vue-editor>
@@ -88,8 +92,14 @@
 
 <script>
 import { postService } from "@/_services/post.service";
+import { imageService } from "@/_services/image.service";
 import { mapActions, mapGetters } from "vuex";
 import { VueEditor } from "vue2-editor";
+import Quill from "quill";
+import ImageResize from "quill-image-resize-module";
+
+Quill.register("modules/imageResize", ImageResize);
+
 export default {
   name: "PostForm",
   components: { VueEditor },
@@ -101,6 +111,11 @@ export default {
     return {
       form: {},
       isLoading: false,
+      editorSettings: {
+        modules: {
+          imageResize: {},
+        },
+      },
     };
   },
   computed: {
@@ -110,12 +125,18 @@ export default {
     item: {
       immediate: true,
       handler() {
-        this.form = { ...this.item };
+        this.form = {
+          title: this.item.title,
+          description: this.item.description,
+          text: this.item.text,
+          subCategoryId: this.item.subCategoryId,
+        };
       },
     },
   },
   created() {
     this.fetchSubCategories();
+    console.log(this.$cookies.get("data"));
   },
   methods: {
     ...mapActions("category", ["fetchSubCategories"]),
@@ -123,17 +144,29 @@ export default {
       try {
         this.isLoading = true;
         if (this.isEdit) {
-          await postService.update(this.form);
+          await postService.update(this.form, this.item._id);
         } else {
           await postService.create(this.form);
         }
-        this.$emit("close");
-        this.$emit("fetch");
+        this.$router.push("/admin/posts");
         this.isLoading = false;
       } catch (err) {
         console.log(err);
         this.isLoading = false;
       }
+    },
+    handleImageAdded(file, Editor, cursorLocation, resetUploader) {
+      console.log("handle");
+      imageService
+        .create({ file })
+        .then((result) => {
+          const url = result.url;
+          Editor.insertEmbed(cursorLocation, "image", url);
+          resetUploader();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };

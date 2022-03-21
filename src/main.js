@@ -8,7 +8,9 @@ import Buefy from "buefy";
 import "./plugins/vee-calidate";
 import "buefy/dist/buefy.css";
 import "./plugins/font-awesome";
+import Vue2Editor from "vue2-editor";
 
+Vue.use(Vue2Editor);
 Vue.use(VueCookies);
 Vue.use(Buefy);
 
