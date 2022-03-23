@@ -6,6 +6,7 @@ import router from "../router";
 
 import category from "./category";
 import post from "./post";
+import tag from "./tag"
 
 Vue.use(Vuex);
 
@@ -37,5 +38,6 @@ export default new Vuex.Store({
   modules: {
     category,
     post,
+    tag
   },
 });

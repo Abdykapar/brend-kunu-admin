@@ -21,7 +21,7 @@
         Posts
       </b-navbar-item>
       <b-navbar-item href="#"> Comments </b-navbar-item>
-      <b-navbar-item href="#"> Tags </b-navbar-item>
+      <b-navbar-item href="/admin/tags"> Tags </b-navbar-item>
       <!-- <b-navbar-dropdown label="Info">
                   <b-navbar-item href="#">
                       About

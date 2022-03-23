@@ -47,6 +47,12 @@ const routes = [
         name: "PostEdit",
         component: () => import("../views/PostCreate.vue"),
       },
+      {
+        path: "tags",
+        meta: { auth: true },
+        name: "Tags",
+        component: () => import("../views/Tag.vue"),
+      },
     ],
   },
 ];
