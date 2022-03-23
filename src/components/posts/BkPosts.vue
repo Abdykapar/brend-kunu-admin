@@ -33,6 +33,9 @@
       <b-table-column field="category" label="Category" v-slot="{ row }">
         {{ row.subCategoryId && row.subCategoryId.title }}
       </b-table-column>
+      <b-table-column field="tags" label="Tags" v-slot="{ row }">
+        {{ row.tags && row.tags.map((i) => i.title).join(", ") }}
+      </b-table-column>
       <b-table-column field="action" label="Edit/Delete" v-slot="{ row }">
         <b-button
           @click="$router.push({ name: 'PostEdit', params: { id: row._id } })"

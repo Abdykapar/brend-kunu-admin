@@ -72,6 +72,39 @@
             </b-select>
           </b-field>
         </ValidationProvider>
+        <ValidationProvider name="tag" v-slot="{ errors }">
+          <b-field
+            label="Tags"
+            class="mb-3"
+            :type="errors[0] && 'is-danger'"
+            :message="errors"
+          >
+            <b-autocomplete
+              v-model="selectedTag"
+              ref="autocomplete"
+              field="title"
+              :data="filteredTags"
+              open-on-focus
+              placeholder="e.g. News"
+              @select="onSelectTag"
+            >
+              <template #empty>No results for {{ selectedTag }}</template>
+            </b-autocomplete>
+          </b-field>
+        </ValidationProvider>
+        <b-field grouped group-multiline>
+          <div v-for="(t, i) in selectedTags" :key="t._id" class="control">
+            <b-tag
+              type="is-info"
+              attached
+              closable
+              aria-close-label="Close tag"
+              @close="onCloseTag(i)"
+            >
+              {{ t.title }}
+            </b-tag>
+          </div>
+        </b-field>
         <b-field label="Text" class="mb-3">
           <vue-editor
             id="editor"
@@ -115,11 +148,13 @@ export default {
   components: { VueEditor },
   props: {
     isEdit: { type: Boolean, default: false },
-    item: { type: Object, default: () => {} },
+    item: { type: Object, default: () => ({ tags: [] }) },
   },
   data() {
     return {
       form: {},
+      selectedTags: [],
+      selectedTag: "",
       isLoading: false,
       editorSettings: {
         modules: {
@@ -130,33 +165,66 @@ export default {
   },
   computed: {
     ...mapGetters("category", ["subCategories"]),
+    ...mapGetters("tag", ["tags"]),
     imageUrl() {
       if (this.form.image) return URL.createObjectURL(this.form.image);
-      if (this.item.image_url) return this.item.image_url;
+      if (this.item.image_url && this.isEdit) return this.item.image_url;
       return "";
+    },
+    filteredTags() {
+      return this.tags.filter((option) => {
+        return (
+          option.title
+            .toString()
+            .toLowerCase()
+            .indexOf(this.selectedTag.toLowerCase()) >= 0 &&
+          !this.selectedTags.some((i) => i._id === option._id)
+        );
+      });
     },
   },
   watch: {
     item: {
       immediate: true,
       handler() {
-        this.form = {
-          title: this.item.title,
-          description: this.item.description,
-          text: this.item.text,
-          subCategoryId: this.item.subCategoryId,
-        };
+        if (this.isEdit) {
+          this.form = {
+            title: this.item.title,
+            description: this.item.description,
+            text: this.item.text,
+            subCategoryId: this.item.subCategoryId,
+            tags: this.item.tags || [],
+          };
+          this.selectedTags = this.tags.filter((i) =>
+            this.item.tags.includes(i._id)
+          );
+        }
+      },
+    },
+    tags: {
+      immediate: true,
+      handler() {
+        if (this.isEdit) {
+          this.selectedTags = this.tags.filter((i) =>
+            this.item.tags.includes(i._id)
+          );
+        } else {
+          this.selectedTags = [];
+        }
       },
     },
   },
   created() {
     this.fetchSubCategories();
+    this.fetchTags();
   },
   methods: {
     ...mapActions("category", ["fetchSubCategories"]),
+    ...mapActions("tag", ["fetchTags"]),
     async onSubmit() {
       try {
         this.isLoading = true;
+        this.form.tags = this.selectedTags.map((i) => i._id);
         if (this.isEdit) {
           await postService.update(this.form, this.item._id);
         } else {
@@ -181,17 +249,31 @@ export default {
           console.log(err);
         });
     },
-    onImageRemove (img) {
-      const a = img.split("/")
-      const b = a[a.length - 1]
+    onImageRemove(img) {
+      const a = img.split("/");
+      const b = a[a.length - 1];
       if (b) {
-        imageService.deleteByName(b).then(() => {
-          console.log("Image deleted, url: ", b)
-        }).catch(err => {
-          console.log(err)
-        })
+        imageService
+          .deleteByName(b)
+          .then(() => {
+            console.log("Image deleted, url: ", b);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
-    }
+    },
+    onCloseTag(index) {
+      this.selectedTags.splice(index, 1);
+    },
+    onSelectTag(tag) {
+      if (tag) {
+        this.selectedTags.push(tag);
+        this.$nextTick(() => {
+          this.selectedTag = "";
+        });
+      }
+    },
   },
 };
 </script>

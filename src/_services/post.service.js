@@ -13,7 +13,11 @@ class PostService extends BaseApiService {
   create(data) {
     const fd = new FormData();
     for (const [i, value] of Object.entries(data)) {
-      fd.append(`${i}`, value);
+      if (Array.isArray(value)) {
+        for (const j of value) {
+          fd.append(`${i}`, j);
+        }
+      } else fd.append(`${i}`, value);
     }
     const url = "/post/create";
     return this.sendPostRequest(url, fd);
@@ -23,7 +27,11 @@ class PostService extends BaseApiService {
     delete data.image_url;
     const fd = new FormData();
     for (const [i, value] of Object.entries(data)) {
-      fd.append(`${i}`, value);
+      if (Array.isArray(value)) {
+        for (const j of value) {
+          fd.append(`${i}`, j);
+        }
+      } else fd.append(`${i}`, value);
     }
     const url = `/post/update/${id}`;
     return this.sendPutRequest(url, fd);

@@ -2,7 +2,7 @@ import { postService } from "../_services/post.service";
 
 const state = () => ({
   data: [],
-  post: {},
+  post: { tags: [] },
   isLoading: false,
 });
 
