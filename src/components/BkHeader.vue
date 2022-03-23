@@ -2,16 +2,24 @@
   <b-navbar type="is-primary">
     <template #brand>
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
-        <img
-          src="https://raw.githubusercontent.com/buefy/buefy/dev/static/img/buefy-logo.png"
-          alt="Lightweight UI components for Vue.js based on Bulma"
-        />
+        <h3>Brend Kunu</h3>
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item href="#"> Home </b-navbar-item>
-      <b-navbar-item href="/admin/categories"> Categories </b-navbar-item>
-      <b-navbar-item href="/admin/posts"> Posts </b-navbar-item>
+      <b-navbar-item href="/" :active="$route.path === '/'">
+        Home
+      </b-navbar-item>
+      <b-navbar-item
+        href="/admin/categories"
+        :active="$route.path === '/admin/categories'"
+        >Categories</b-navbar-item
+      >
+      <b-navbar-item
+        href="/admin/posts"
+        :active="$route.path === '/admin/posts'"
+      >
+        Posts
+      </b-navbar-item>
       <b-navbar-item href="#"> Comments </b-navbar-item>
       <b-navbar-item href="#"> Tags </b-navbar-item>
       <!-- <b-navbar-dropdown label="Info">

@@ -14,7 +14,7 @@
         </div>
       </div>
     </div>
-    <b-table striped :data="posts">
+    <b-table striped hoverable class="bk-table" :data="posts">
       <b-table-column
         field="id"
         label="ID"
@@ -96,5 +96,10 @@ export default {
 .grid {
   display: grid;
   row-gap: 0.3rem;
+}
+.bk-table {
+  table td {
+    vertical-align: middle;
+  }
 }
 </style>

@@ -8,7 +8,7 @@
         >Post create</b-breadcrumb-item
       >
     </b-breadcrumb>
-    <post-form isEdit :item="post" />
+    <post-form :isEdit="!!this.$route.params.id" :item="post" />
   </div>
 </template>
 

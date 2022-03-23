@@ -22,15 +22,18 @@
         >
           <b-field
             label="Description"
-            class="w-200"
+            class="mb-4"
             :type="errors[0] && 'is-danger'"
             :message="errors"
           >
             <b-input v-model="form.description" type="textarea"> </b-input>
           </b-field>
         </ValidationProvider>
+        <figure v-if="imageUrl" class="image is-128">
+          <img :src="imageUrl" />
+        </figure>
         <b-field
-          class="file is-info mt-4"
+          class="file is-info mt-2"
           :class="{ 'has-name': !!form.image }"
         >
           <b-upload v-model="form.image" class="file-label">
@@ -69,20 +72,27 @@
             </b-select>
           </b-field>
         </ValidationProvider>
-        <vue-editor
-          id="editor"
-          useCustomImageHandler
-          :editorOptions="editorSettings"
-          @image-added="handleImageAdded"
-          v-model="form.text"
-        >
-        </vue-editor>
+        <b-field label="Text" class="mb-3">
+          <vue-editor
+            id="editor"
+            useCustomImageHandler
+            :editorOptions="editorSettings"
+            @image-added="handleImageAdded"
+            @image-removed="onImageRemove"
+            v-model="form.text"
+          >
+          </vue-editor>
+        </b-field>
         <div class="submit mt-4">
+          <b-button :loading="isLoading" native-type="submit" type="is-info">{{
+            isEdit ? "Edit" : "Create"
+          }}</b-button>
           <b-button
+            @click="$router.back()"
+            class="ml-4"
             :loading="isLoading"
-            native-type="submit"
-            type="is-primary"
-            >{{ isEdit ? "Edit" : "Create" }}</b-button
+            type="is-danger"
+            >Cancel</b-button
           >
         </div>
       </form>
@@ -120,6 +130,11 @@ export default {
   },
   computed: {
     ...mapGetters("category", ["subCategories"]),
+    imageUrl() {
+      if (this.form.image) return URL.createObjectURL(this.form.image);
+      if (this.item.image_url) return this.item.image_url;
+      return "";
+    },
   },
   watch: {
     item: {
@@ -136,7 +151,6 @@ export default {
   },
   created() {
     this.fetchSubCategories();
-    console.log(this.$cookies.get("data"));
   },
   methods: {
     ...mapActions("category", ["fetchSubCategories"]),
@@ -156,7 +170,6 @@ export default {
       }
     },
     handleImageAdded(file, Editor, cursorLocation, resetUploader) {
-      console.log("handle");
       imageService
         .create({ file })
         .then((result) => {
@@ -168,6 +181,17 @@ export default {
           console.log(err);
         });
     },
+    onImageRemove (img) {
+      const a = img.split("/")
+      const b = a[a.length - 1]
+      if (b) {
+        imageService.deleteByName(b).then(() => {
+          console.log("Image deleted, url: ", b)
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    }
   },
 };
 </script>
@@ -180,5 +204,8 @@ export default {
 }
 .post-title {
   text-align: center;
+}
+.is-128 {
+  width: 128px;
 }
 </style>

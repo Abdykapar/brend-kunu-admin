@@ -32,6 +32,11 @@ class ImageService extends BaseApiService {
     const url = `/image/${id}`;
     return this.sendDeleteRequest(url);
   }
+
+  deleteByName(name) {
+    const url = `/image?url=${name}`;
+    return this.sendDeleteRequest(url);
+  }
 }
 
 export const imageService = new ImageService();
